@@ -988,6 +988,7 @@ namespace kv
       }
 
       version = c.value();
+      LOG_INFO << "Committing transaction at version " << version << std::endl;
 
       const std::vector<uint8_t> data = serialise();
       if (!data.size())
@@ -995,10 +996,11 @@ namespace kv
 
       return store->commit(
         version,
-        [data = std::move(
-           data), req_id = std::move(req_id)]() -> std::tuple<CommitSuccess, TxHistory::RequestID, std::vector<uint8_t>> {
-          return {CommitSuccess::OK, std::move(req_id), std::move(data)};
-        },
+        [data = std::move(data), req_id = std::move(req_id)]()
+          -> std::
+            tuple<CommitSuccess, TxHistory::RequestID, std::vector<uint8_t>> {
+              return {CommitSuccess::OK, std::move(req_id), std::move(data)};
+            },
         false);
     }
 
@@ -1124,7 +1126,8 @@ namespace kv
     {}
 
     // Used by frontend to commit reserved transactions
-    std::tuple<CommitSuccess, TxHistory::RequestID, std::vector<uint8_t>> commit_reserved()
+    std::tuple<CommitSuccess, TxHistory::RequestID, std::vector<uint8_t>>
+    commit_reserved()
     {
       if (committed)
         throw std::logic_error("Transaction already committed");
@@ -1609,7 +1612,8 @@ namespace kv
           if (success_ != CommitSuccess::OK)
             LOG_DEBUG_FMT("Failed Tx commit {}", last_replicated + offset);
 
-          if (h) {
+          if (h)
+          {
             h->add_result(reqid, version, data_);
           }
 
