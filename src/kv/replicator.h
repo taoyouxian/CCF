@@ -4,6 +4,7 @@
 
 #include "../crypto/symmkey.h"
 #include "kvtypes.h"
+#include "node/nodetonode.h"
 
 #include <algorithm>
 #include <iostream>

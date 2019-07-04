@@ -510,6 +510,7 @@ class CCFRemote(object):
         else:
             cmd = [
                 self.BIN,
+                f"--id={node_id}",
                 f"--enclave-file={lib_path}",
                 f"--raft-election-timeout-ms={election_timeout}",
                 f"--raft-host={host}",

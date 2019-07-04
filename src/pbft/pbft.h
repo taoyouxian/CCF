@@ -106,7 +106,7 @@ namespace pbft
           auto version = std::get<2>(args.id);
 
           LOG_INFO << "*************** ON_REQUEST" << std::endl;
-          if (session > 4)
+          // if (session > 4)
           {
             LOG_INFO << "receiving request" << std::endl;
             message_receiver_base->receive_request(
@@ -115,10 +115,10 @@ namespace pbft
             LOG_INFO << "data size: " << args.data.size() << std::endl;
             LOG_INFO << "session: " << session << std::endl;
           }
-          else
-          {
-            LOG_INFO << "SKIPPING PBFT CALLBACK BECAUSE TOO EARLY" << std::endl;
-          }
+          // else
+          // {
+            // LOG_INFO << "SKIPPING PBFT CALLBACK BECAUSE TOO EARLY" << std::endl;
+          // }
         };
       LOG_INFO_FMT("Setting up PBFT replica for node with id: {}", local_id);
 
@@ -167,17 +167,12 @@ namespace pbft
                              Seqno n) {
         LOG_INFO << "<<<< START exec_command() >>>>" << std::endl;
 
-        LOG_INFO << "This is node " << node_info.own_info.id << std::endl;
-
         // TODO: Support all frontends
-        auto handler = this->rpc_map->find(ccf::ActorsType::users);
+        auto handler = this->rpc_map->find(ccf::ActorsType::management);
         if (!handler.has_value())
           throw std::logic_error("No user frontend in pbft exec_command");
 
         auto user_frontend = handler.value();
-
-        // Extract request
-        LOG_INFO << "Size of request is " << inb->size << std::endl;
 
         // TODO: Also pass the transaction object and rpc_ctx used earlier on to
         // verify the caller/signature

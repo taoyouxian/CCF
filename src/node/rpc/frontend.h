@@ -103,6 +103,7 @@ namespace ccf
     {
       if (history == nullptr)
         history = tables.get_history().get();
+      LOG_INFO << "update_history: " << std::hex << history << std::dec << std::endl;
     }
 
     std::pair<bool, nlohmann::json> unpack_json(
@@ -535,6 +536,7 @@ namespace ccf
       // if (history)
       //   history->add_response(reqid, rv);
 
+      // TODO: Remove this
       LOG_INFO << "About to process json" << std::endl;
       auto rep = process_json(
         ctx, tx, caller_id.value(), unsigned_rpc, signed_request, false);

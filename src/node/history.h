@@ -337,7 +337,7 @@ namespace ccf
     void add_request(
       kv::TxHistory::RequestID id, const std::vector<uint8_t>& request) override
     {
-      LOG_DEBUG << fmt::format("HISTORY: add_request {0}", id) << std::endl;
+      LOG_INFO << fmt::format("HISTORY: add_request {0}", id) << std::endl;
       requests[id] = request;
 #ifdef PBFT
       auto callback = callbacks.find(pbft::Callbacks::ON_REQUEST);

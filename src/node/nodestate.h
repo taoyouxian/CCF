@@ -249,6 +249,16 @@ namespace ccf
       {
         sm.advance(State::started);
       }
+
+#ifdef PBFT
+      // TODO: For now, node id set when the network is created and used to
+      // create PBFT
+      self = args.node_id;
+      LOG_INFO << "Created new node enclave with " << self << std::endl;
+      setup_pbft();
+      setup_history();
+#endif
+
       return Success<CreateNew::Out>({node_cert, quote});
     }
 
@@ -1076,9 +1086,9 @@ namespace ccf
 
       network.tables->set_replicator(raft);
 
-#ifdef PBFT
-      setup_pbft();
-#endif
+      // #ifdef PBFT
+      //       setup_pbft();
+      // #endif
 
       // When a node is added, even locally, inform the host so that it can
       // map the node id to a hostname and service and inform raft so that it
@@ -1194,12 +1204,25 @@ namespace ccf
 
     void setup_store()
     {
+      encryptor =
+#ifdef USE_NULL_ENCRYPTOR
+        std::make_shared<NullTxEncryptor>();
+#else
+        std::make_shared<TxEncryptor>(self, *network.secrets);
+#endif
+      network.tables->set_encryptor(encryptor);
+    }
+
+    void setup_history()
+    {
       history = std::make_shared<MerkleTxHistory>(
         *network.tables.get(),
         self,
         node_kp,
         network.signatures,
         network.nodes);
+
+      LOG_INFO << "History created" << std::endl;
 #ifdef PBFT
       if (pbft)
         history->register_callback(
@@ -1207,15 +1230,7 @@ namespace ccf
           pbft->get_callback(pbft::Callbacks::ON_REQUEST));
 #endif
 
-      encryptor =
-#ifdef USE_NULL_ENCRYPTOR
-        std::make_shared<NullTxEncryptor>();
-#else
-        std::make_shared<TxEncryptor>(self, *network.secrets);
-#endif
-
       network.tables->set_history(history);
-      network.tables->set_encryptor(encryptor);
     }
 
     void add_node(
