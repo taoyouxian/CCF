@@ -121,14 +121,20 @@ include_directories(
 
 set(TARGET "all" CACHE STRING "One of sgx, virtual, all")
 
-set(OE_PREFIX "/opt/openenclave" CACHE PATH "Path to Open Enclave install")
+set(OE_PREFIX "~/oe_0.6_prefix" CACHE PATH "Path to Open Enclave install")
 message(STATUS "Open Enclave prefix set to ${OE_PREFIX}")
 
-set(CLIENT_MBEDTLS_PREFIX "/usr/local" CACHE PATH "Prefix to the mbedtls install the client should use")
+set(CLIENT_MBEDTLS_PREFIX "~/mbed/host" CACHE PATH "Prefix to the mbedtls install the client should use")
 message(STATUS "Client mbedtls prefix set to ${CLIENT_MBEDTLS_PREFIX}")
 
 set(CLIENT_MBEDTLS_INCLUDE_DIR "${CLIENT_MBEDTLS_PREFIX}/include")
 set(CLIENT_MBEDTLS_LIB_DIR "${CLIENT_MBEDTLS_PREFIX}/lib")
+
+set(ENCLAVE_MBEDTLS_PREFIX "~/mbed/enclave" CACHE PATH "Prefix to the mbedtls install the enclave should use")
+message(STATUS "Enclave mbedtls prefix set to ${ENCLAVE_MBEDTLS_PREFIX}")
+
+set(ENCLAVE_MBEDTLS_INCLUDE_DIR "${ENCLAVE_MBEDTLS_PREFIX}/include")
+set(ENCLAVE_MBEDTLS_LIB_DIR "${ENCLAVE_MBEDTLS_PREFIX}/lib")
 
 set(OE_INCLUDE_DIR "${OE_PREFIX}/include")
 set(OE_LIB_DIR "${OE_PREFIX}/lib/openenclave")
@@ -225,16 +231,21 @@ set(LUA_SOURCES
   ${LUA_DIR}/lvm.c
   ${LUA_DIR}/lzio.c)
 
-set(OE_MBEDTLS_LIBRARIES
-  "${OE_LIB_DIR}/enclave/libmbedtls.a"
-  "${OE_LIB_DIR}/enclave/libmbedx509.a"
-  "${OE_LIB_DIR}/enclave/libmbedcrypto.a"
+set(ENCLAVE_MBEDTLS_LIBRARIES
+  "${ENCLAVE_MBEDTLS_LIB_DIR}/libmbedtls.a"
+  "${ENCLAVE_MBEDTLS_LIB_DIR}/libmbedx509.a"
+  "${ENCLAVE_MBEDTLS_LIB_DIR}/libmbedcrypto.a"
 )
 
 find_library(CRYPTO_LIBRARY crypto)
 
+set(OE_ENCLAVE_MBEDTLS "${OE_LIB_DIR}/enclave/libmbedtls.a")
+set(OE_ENCLAVE_MBEDX509 "${OE_LIB_DIR}/enclave/libmbedx509.a")
+set(OE_ENCLAVE_MBEDCRYPTO "${OE_LIB_DIR}/enclave/libmbedcrypto.a")
+set(OE_ENCLAVE_CRYPTOMBED "${OE_LIB_DIR}/enclave/liboecryptombed.a")
 set(OE_ENCLAVE_LIBRARY "${OE_LIB_DIR}/enclave/liboeenclave.a")
 set(OE_ENCLAVE_CORE "${OE_LIB_DIR}/enclave/liboecore.a")
+set(OE_ENCLAVE_SYSCALL "${OE_LIB_DIR}/enclave/liboesyscall.a")
 set(OE_ENCLAVE_LIBC "${OE_LIB_DIR}/enclave/liboelibc.a")
 set(OE_ENCLAVE_LIBCXX "${OE_LIB_DIR}/enclave/liboelibcxx.a")
 set(OE_HOST_LIBRARY "${OE_LIB_DIR}/host/liboehost.a")
@@ -250,9 +261,14 @@ set(ENCLAVE_LIBS
   evercrypt.enclave
   lua.enclave
   ${OE_ENCLAVE_LIBRARY}
-  ${OE_MBEDTLS_LIBRARIES}
+  ${OE_ENCLAVE_CRYPTOMBED}
+  ${OE_ENCLAVE_MBEDCRYPTO}
+  ${OE_ENCLAVE_MBEDX509}
+  ${OE_ENCLAVE_MBEDTLS}
+  ${ENCLAVE_MBEDTLS_LIBRARIES}
   ${OE_ENCLAVE_LIBCXX}
   ${OE_ENCLAVE_LIBC}
+  ${OE_ENCLAVE_SYSCALL}
   ${OE_ENCLAVE_CORE}
   secp256k1.enclave
 )
@@ -285,9 +301,9 @@ function(use_client_mbedtls name)
   target_link_libraries(${name} PRIVATE ${CLIENT_MBEDTLS_LIBRARIES})
 endfunction()
 
-function(use_oe_mbedtls name)
-  target_include_directories(${name} PRIVATE ${OE_TP_INCLUDE_DIR})
-  target_link_libraries(${name} PRIVATE ${OE_MBEDTLS_LIBRARIES})
+function(use_enclave_mbedtls name)
+  target_include_directories(${name} PRIVATE ${ENCLAVE_MBEDTLS_INCLUDE_DIR})
+  target_link_libraries(${name} PRIVATE ${ENCLAVE_MBEDTLS_LIBRARIES})
 endfunction()
 
 function(add_san name)
@@ -386,6 +402,7 @@ function(add_enclave_lib name app_oe_conf_path enclave_sign_key_path)
       ${OE_INCLUDE_DIR}
       ${OE_LIBCXX_INCLUDE_DIR}
       ${OE_LIBC_INCLUDE_DIR}
+      ${ENCLAVE_MBEDTLS_INCLUDE_DIR}
       ${OE_TP_INCLUDE_DIR}
       ${PARSED_ARGS_INCLUDE_DIRS}
       ${EVERCRYPT_INC}

@@ -57,7 +57,7 @@ if(NOT ${TARGET} STREQUAL "virtual")
     -lgcc
     evercrypt.enclave
   )
-  use_oe_mbedtls(ccfcrypto.enclave)
+  use_enclave_mbedtls(ccfcrypto.enclave)
   set_property(TARGET ccfcrypto.enclave PROPERTY POSITION_INDEPENDENT_CODE ON)
 endif()
 
