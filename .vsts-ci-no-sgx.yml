@@ -47,7 +47,7 @@ schedules:
   always: true
 
 jobs:
-- job: SIG ILL hunt A
+- job: SIG_ILL_hunt_A
   pool:
     vmImage: 'ubuntu-16.04'
   container:
@@ -67,7 +67,7 @@ jobs:
       displayName: keyexchange_test
       workingDirectory: build
 
-- job: SIG ILL hunt B
+- job: SIG_ILL_hunt_B
   pool:
     vmImage: 'ubuntu-16.04'
   container:
@@ -87,7 +87,7 @@ jobs:
       displayName: keyexchange_test
       workingDirectory: build
 
-- job: SIG ILL hunt C
+- job: SIG_ILL_hunt_C
   pool:
     vmImage: 'ubuntu-16.04'
   container:
@@ -107,7 +107,7 @@ jobs:
       displayName: keyexchange_test
       workingDirectory: build
 
-- job: SIG ILL hunt D
+- job: SIG_ILL_hunt_D
   pool:
     vmImage: 'ubuntu-16.04'
   container:
