@@ -1,5 +1,6 @@
 parameters:
   cmake_args: ''
+  ninja_args: ''
 
 steps:
 - script: |
@@ -12,6 +13,6 @@ steps:
   inputs:
     cmakeArgs: '-L -GNinja -DTARGET=sgx .. ${{ parameters.cmake_args }}'
 
-- script: ninja
+- script: ninja ${{ parameters.ninja_args }}
   displayName: Ninja
   workingDirectory: build

@@ -61,11 +61,72 @@ jobs:
     - template: .vsts-ci-templates/build.yml
       parameters:
         cmake_args: '-DTARGET=virtual -DBUILD_SMALLBANK=OFF -DCOVERAGE=ON'
+        ninja_args: 'keyexchange_test'
 
     - script: gdb -ex run ./keyexchange_test -ex backtrace -ex quit
       displayName: keyexchange_test
       workingDirectory: build
+
+- job: SIG ILL hunt B
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container:
+    image: ccfciteam/ccf-ci-18.04:latest
+    options: --publish-all
+  steps:
+    - checkout: self
+      clean: true
+      submodules: true
       
+    - template: .vsts-ci-templates/build.yml
+      parameters:
+        cmake_args: '-DTARGET=virtual -DBUILD_SMALLBANK=OFF -DCOVERAGE=ON'
+        ninja_args: 'keyexchange_test'
+
+    - script: gdb -ex run ./keyexchange_test -ex backtrace -ex quit
+      displayName: keyexchange_test
+      workingDirectory: build
+
+- job: SIG ILL hunt C
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container:
+    image: ccfciteam/ccf-ci-18.04:latest
+    options: --publish-all
+  steps:
+    - checkout: self
+      clean: true
+      submodules: true
+      
+    - template: .vsts-ci-templates/build.yml
+      parameters:
+        cmake_args: '-DTARGET=virtual -DBUILD_SMALLBANK=OFF -DCOVERAGE=ON'
+        ninja_args: 'keyexchange_test'
+
+    - script: gdb -ex run ./keyexchange_test -ex backtrace -ex quit
+      displayName: keyexchange_test
+      workingDirectory: build
+
+- job: SIG ILL hunt D
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container:
+    image: ccfciteam/ccf-ci-18.04:latest
+    options: --publish-all
+  steps:
+    - checkout: self
+      clean: true
+      submodules: true
+      
+    - template: .vsts-ci-templates/build.yml
+      parameters:
+        cmake_args: '-DTARGET=virtual -DBUILD_SMALLBANK=OFF -DCOVERAGE=ON'
+        ninja_args: 'keyexchange_test'
+
+    - script: gdb -ex run ./keyexchange_test -ex backtrace -ex quit
+      displayName: keyexchange_test
+      workingDirectory: build
+
 # - job: Coverage
 #   pool:
 #     vmImage: 'ubuntu-16.04'
