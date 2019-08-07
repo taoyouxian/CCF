@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Governance &mdash; CCF  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Key-Value store" href="kv/index.html" />
+    <link rel="prev" title="Ledger" href="ledger.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CCF
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start_network.html">Starting up a network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ledger.html">Ledger</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Governance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submitting-a-new-proposal">Submitting a new proposal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#displaying-proposals">Displaying proposals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#removing-proposals">Removing proposals</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kv/index.html">Key-Value store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recovery.html">Catastrophic Recovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cryptography.html">Cryptography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">Example App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">End-to-end demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rpc_api.html">RPC API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CCF</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Governance</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/governance.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="governance">
+<h1>Governance<a class="headerlink" href="#governance" title="Permalink to this headline">¶</a></h1>
+<p>A trusted set of members is in charge of governing a given CCF network. For transparency and auditability, all governance operations are recorded in plaintext in the ledger.</p>
+<p>One member (proposer) can submit a new proposal. Once they have done this, other members can vote for the proposal using its unique proposal ID. Proposals are executed once a quorum of members have accepted it.</p>
+<p>The quorum is defined as a Lua script in the genesis transaction (see for example <a class="reference external" href="https://github.com/microsoft/CCF/blob/master/src/runtime_config/gov.lua">the default quorum script</a>). Common governance operations include adding a new user, member or a new version of the CCF code.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A proposal can be a Lua script defined by the proposer member or a static function defined by CCF (e.g. <code class="docutils literal notranslate"><span class="pre">new_member</span></code>).</p>
+</div>
+<div class="section" id="submitting-a-new-proposal">
+<h2>Submitting a new proposal<a class="headerlink" href="#submitting-a-new-proposal" title="Permalink to this headline">¶</a></h2>
+<p>Assuming that 3 members (<code class="docutils literal notranslate"><span class="pre">member1</span></code>, <code class="docutils literal notranslate"><span class="pre">member2</span></code> and <code class="docutils literal notranslate"><span class="pre">member3</span></code>) are already registered in the CCF network and that the quorum is defined as a strict majority of members, a member can submit a new proposal using the <code class="docutils literal notranslate"><span class="pre">memberclient</span></code> command-line utility (see <a class="reference internal" href="rpc_api.html#member-methods"><span class="std std-ref">Member methods</span></a> for equivalent JSON-RPC API).</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">member1</span></code> may submit a proposal to add a new member (<code class="docutils literal notranslate"><span class="pre">member4</span></code>) to the consortium:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ memberclient add_member --ca<span class="o">=</span>networkcert.pem --member_cert<span class="o">=</span>member4_cert.pem --cert<span class="o">=</span>member1_cert.pem --privk<span class="o">=</span>member1_privk.pem --host<span class="o">=</span><span class="m">10</span>.1.0.4 --port<span class="o">=</span><span class="m">25000</span>
+<span class="o">{</span><span class="s2">&quot;commit&quot;</span>:100,<span class="s2">&quot;global_commit&quot;</span>:99,<span class="s2">&quot;id&quot;</span>:0,<span class="s2">&quot;jsonrpc&quot;</span>:<span class="s2">&quot;2.0&quot;</span>,<span class="s2">&quot;result&quot;</span>:<span class="o">{</span><span class="s2">&quot;completed&quot;</span>:false,<span class="s2">&quot;id&quot;</span>:1<span class="o">}</span>,<span class="s2">&quot;term&quot;</span>:2<span class="o">}</span>
+</pre></div>
+</div>
+<p>In this case, a new proposal with id <code class="docutils literal notranslate"><span class="pre">1</span></code> has successfully been created and the proposer member has automatically accepted it. Other members can then accept or reject the proposal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>// Proposal <span class="m">1</span> is already created by member <span class="m">1</span> <span class="o">(</span>votes: <span class="m">1</span>/3<span class="o">)</span>
+
+// Member <span class="m">2</span> rejects the proposal <span class="o">(</span>votes: <span class="m">1</span>/3<span class="o">)</span>
+$ memberclient vote --reject --id<span class="o">=</span><span class="m">1</span> --cert<span class="o">=</span>member2_cert.pem --privk<span class="o">=</span>member2_privk.pem --host<span class="o">=</span><span class="m">10</span>.1.0.4 --port<span class="o">=</span><span class="m">25000</span> --ca<span class="o">=</span>networkcert.pem --sign
+<span class="o">{</span><span class="s2">&quot;commit&quot;</span>:104,<span class="s2">&quot;global_commit&quot;</span>:103,<span class="s2">&quot;id&quot;</span>:0,<span class="s2">&quot;jsonrpc&quot;</span>:<span class="s2">&quot;2.0&quot;</span>,<span class="s2">&quot;result&quot;</span>:false,<span class="s2">&quot;term&quot;</span>:2<span class="o">}</span>
+
+// Member <span class="m">3</span> accepts the proposal <span class="o">(</span>votes: <span class="m">2</span>/3<span class="o">)</span>
+// As a quorum of members have accepted the proposal, member4 is added to the consortium
+$ memberclient vote --accept --id<span class="o">=</span><span class="m">1</span> --cert<span class="o">=</span>member3_cert.pem --privk<span class="o">=</span>member3_privk.pem --host<span class="o">=</span><span class="m">10</span>.1.0.4 --port<span class="o">=</span><span class="m">25000</span> --ca<span class="o">=</span>networkcert.pem --sign
+<span class="o">{</span><span class="s2">&quot;commit&quot;</span>:106,<span class="s2">&quot;global_commit&quot;</span>:105,<span class="s2">&quot;id&quot;</span>:0,<span class="s2">&quot;jsonrpc&quot;</span>:<span class="s2">&quot;2.0&quot;</span>,<span class="s2">&quot;result&quot;</span>:true,<span class="s2">&quot;term&quot;</span>:2<span class="o">}</span>
+</pre></div>
+</div>
+<p>As soon as <code class="docutils literal notranslate"><span class="pre">member3</span></code> accepts the proposal, a quorum (2 out of 3) of members has been reached and the proposal completes, successfully adding <code class="docutils literal notranslate"><span class="pre">member4</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Once a new member has been accepted to the consortium, the new member must acknowledge that it is active:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ../build/memberclient ack --cert<span class="o">=</span>member4_cert.pem --privk<span class="o">=</span>member4_privk.pem --host<span class="o">=</span><span class="m">10</span>.1.0.4 --port<span class="o">=</span><span class="m">25000</span> --ca<span class="o">=</span>networkcert.pem --sign
+<span class="o">{</span><span class="s2">&quot;commit&quot;</span>:108,<span class="s2">&quot;global_commit&quot;</span>:107,<span class="s2">&quot;id&quot;</span>:2,<span class="s2">&quot;jsonrpc&quot;</span>:<span class="s2">&quot;2.0&quot;</span>,<span class="s2">&quot;result&quot;</span>:true,<span class="s2">&quot;term&quot;</span>:2<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="displaying-proposals">
+<h2>Displaying proposals<a class="headerlink" href="#displaying-proposals" title="Permalink to this headline">¶</a></h2>
+<p>The details of pending proposals, including the proposer member ID, proposal script, parameters and votes, can be displayed with the <code class="docutils literal notranslate"><span class="pre">proposal_display</span></code> option of the <code class="docutils literal notranslate"><span class="pre">memberclient</span></code> utility. For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ memberclient proposal_display --cert<span class="o">=</span>member1_cert.pem --privk<span class="o">=</span>member1_privk.pem --host<span class="o">=</span><span class="m">10</span>.1.0.4 --port<span class="o">=</span><span class="m">25000</span> --ca<span class="o">=</span>networkcert.pem
+------ Proposal ------
+-- Proposal id: <span class="m">1</span>
+-- Proposer id: <span class="m">0</span>
+-- Script: <span class="o">{</span><span class="s2">&quot;text&quot;</span>:<span class="s2">&quot;\n      tables, member_cert = ...\n      return Calls:call(\&quot;new_member\&quot;, member_cert)\n    &quot;</span><span class="o">}</span>
+-- Parameter: <span class="o">[</span>&lt;member_cert&gt;<span class="o">]</span>
+-- Votes: <span class="o">[[</span><span class="m">1</span>,<span class="o">{</span><span class="s2">&quot;text&quot;</span>:<span class="s2">&quot;\n      tables, changes = ...\n      return false&quot;</span><span class="o">}]]</span>
+----------------------
+</pre></div>
+</div>
+<p>In this case, there is one pending proposal (<code class="docutils literal notranslate"><span class="pre">id</span></code> is 1), proposed by the first member (<code class="docutils literal notranslate"><span class="pre">member1</span></code>, <code class="docutils literal notranslate"><span class="pre">id</span></code> is 0) and which will call the <code class="docutils literal notranslate"><span class="pre">new_member</span></code> function with the new member’s certificate as a parameter. Only one vote has been cast by <code class="docutils literal notranslate"><span class="pre">member2</span></code> (<code class="docutils literal notranslate"><span class="pre">id</span></code> is 1) to reject the proposal while <code class="docutils literal notranslate"><span class="pre">member1</span></code> (proposer) has already implicitly accepted it.</p>
+</div>
+<div class="section" id="removing-proposals">
+<h2>Removing proposals<a class="headerlink" href="#removing-proposals" title="Permalink to this headline">¶</a></h2>
+<p>At any stage during the voting process and before the proposal is completed, the proposer member may decide to remove a pending proposal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ memberclient removal --id<span class="o">=</span><span class="m">1</span> --cert<span class="o">=</span>member1_cert.pem --privk<span class="o">=</span>member1_privk.pem --host<span class="o">=</span><span class="m">10</span>.1.0.4 --port<span class="o">=</span><span class="m">25000</span> --ca<span class="o">=</span>networkcert.pem --sign
+<span class="o">{</span><span class="s2">&quot;commit&quot;</span>:110,<span class="s2">&quot;global_commit&quot;</span>:109,<span class="s2">&quot;id&quot;</span>:0,<span class="s2">&quot;jsonrpc&quot;</span>:<span class="s2">&quot;2.0&quot;</span>,<span class="s2">&quot;result&quot;</span>:true,<span class="s2">&quot;term&quot;</span>:4<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kv/index.html" class="btn btn-neutral float-right" title="Key-Value store" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ledger.html" class="btn btn-neutral float-left" title="Ledger" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Microsoft Research
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
